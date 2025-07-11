@@ -1,5 +1,6 @@
 package com.raffasdev.cadastroVeiculos;
 
+import com.raffasdev.cadastroVeiculos.config.EnvInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CadastroDeVeiculosApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CadastroDeVeiculosApplication.class, args);
+        SpringApplication app = new SpringApplication(CadastroDeVeiculosApplication.class);
+        app.addInitializers(new EnvInitializer());
+        app.run(args);
     }
 
 }
