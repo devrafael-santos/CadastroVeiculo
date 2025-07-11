@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: Cadastro_de_Veiculos
+  profiles:
+    active: dev
+  mvc:
+    servlet:
+      path: /api/v1
+
+  datasource:
+    url: ${POSTGRES_DB_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+server:
+  error:
+    whitelabel:
+      enabled: false
+  port: 8080
