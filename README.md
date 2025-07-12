@@ -195,7 +195,7 @@ Navegue até o diretório raiz do projeto e execute o seguinte comando para inic
 
 ## Passo 3️⃣: Acessar a API
 
-Após iniciar os contêineres, você pode fazer as requisiçÕes através do seu navegador no endereço [http://localhost:8080/api/v1/].
+Após iniciar os contêineres, você pode fazer as requisições através do seu navegador (ou alguma aplicação) no endereço [http://localhost:8080/api/v1/].
 
 
 🎉 Espero que este guia passo a passo tenha sido útil para você! 😄
