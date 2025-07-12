@@ -188,7 +188,7 @@ POSTGRES_PASSWORD= [Senha do banco de dados]
 Navegue até o diretório raiz do projeto e execute o seguinte comando para iniciar os contêineres Docker:
 
 ```bash
-   docker-compose --env-file .env.dev.local up --build
+   docker-compose --env-file .env.dev.local up
 ```
 
 🐳 Isso iniciará o contêiner do PostgreSQL para o projeto.
