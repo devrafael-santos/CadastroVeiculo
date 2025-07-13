@@ -52,13 +52,38 @@ A API consiste de um CRUD completo de Proprietario com os seguintes endpoints:
 }
 ```
 
+### `GET /proprietario`
+
+**Request**
+
+```json
+{
+  
+}
+```
+
+**Response**
+
+```json
+[
+  {
+    "cpf": "XXX.XXX.XXX-XX",
+    "nome": "John Doe"
+  },
+  {
+    "cpf": "YYY.YYY.YYY-YY",
+    "nome": "Jane Doe"
+  }
+]
+```
+
 ### `GET /proprietario/{cpf}`
 
 **Request**
 
 ```json
 {
-  []
+  
 }
 ```
 
@@ -85,7 +110,7 @@ A API consiste de um CRUD completo de Proprietario com os seguintes endpoints:
 
 ```json
 {
-  []
+  
 }
 ```
 
@@ -95,7 +120,7 @@ A API consiste de um CRUD completo de Proprietario com os seguintes endpoints:
 
 ```json
 {
-  []
+  
 }
 ```
 
@@ -103,7 +128,7 @@ A API consiste de um CRUD completo de Proprietario com os seguintes endpoints:
 
 ```json
 {
-  []
+  
 }
 ```
 
@@ -141,7 +166,7 @@ O veiculo contem apenas um endpoint para criação e consulta:
 
 ```json
 {
-  []
+  
 }
 ```
 
@@ -171,7 +196,7 @@ Antes de começar, verifique se você possui as seguintes ferramentas instaladas
 Comece clonando este repositório para sua máquina local. Para clonar o repositório, clique no botão "Clone" acima ou execute o seguinte comando no terminal:
 
 ```bash
-git clone https://github.com/devrafael-santos/CadastroVeiculo.git
+   git clone https://github.com/devrafael-santos/CadastroVeiculo.git
 ```
 
 Isso criará uma cópia local do repositório em seu ambiente.
