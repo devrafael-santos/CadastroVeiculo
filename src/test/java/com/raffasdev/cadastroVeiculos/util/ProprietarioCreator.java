@@ -2,6 +2,7 @@ package com.raffasdev.cadastroVeiculos.util;
 
 import com.raffasdev.cadastroVeiculos.domain.Proprietario;
 import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPostResponse;
 
 public class ProprietarioCreator {
@@ -25,6 +26,13 @@ public class ProprietarioCreator {
 
     public static ProprietarioPostResponse createProprietarioPostResponse() {
         return new ProprietarioPostResponse(
+                NOME
+        );
+    }
+
+    public static ProprietarioGetResponse createProprietarioGetResponse() {
+        return new ProprietarioGetResponse(
+                CPF,
                 NOME
         );
     }
