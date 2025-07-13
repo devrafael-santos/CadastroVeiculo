@@ -39,4 +39,18 @@ class ProprietarioControllerTest {
         assertEquals(201, responseEntity.getStatusCode().value());
     }
 
+    @Test
+    @DisplayName("getProprietarioByCpf returns ProprietarioGetResponse when CPF exists")
+    void getProprietarioByCpf_returnsProprietarioGetResponse_WhenCPFExists() {
+        BDDMockito.given(proprietarioService.getProprietarioByCpf(ArgumentMatchers.anyString()))
+                .willReturn(ProprietarioCreator.createProprietarioGetResponse());
+
+        String cpf = ProprietarioCreator.createValidProprietario().getCpf();
+
+        var responseEntity = proprietarioController.getProprietarioByCpf(cpf);
+        System.out.println(cpf + " " + responseEntity.getBody());
+        assertNotNull(responseEntity.getBody());
+        assertEquals(cpf, responseEntity.getBody().cpf());
+        assertEquals(200, responseEntity.getStatusCode().value());
+    }
 }
