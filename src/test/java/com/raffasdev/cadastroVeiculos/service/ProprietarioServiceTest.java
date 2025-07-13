@@ -25,15 +25,12 @@ class ProprietarioServiceTest {
     @InjectMocks
     private ProprietarioService proprietarioService;
 
-    @BeforeEach
-    void setUp() {
-        given(proprietarioRepositoryMock.existsByCpf(ArgumentMatchers.anyString()))
-                .willReturn(Boolean.FALSE);
-    }
-
     @Test
     @DisplayName("saveProprietario returns ProprietarioPostResponse when valid data is provided")
     void saveProprietario_ReturnsProprietarioPostResponse_WhenValidDataIsProvided() {
+        given(proprietarioRepositoryMock.existsByCpf(ArgumentMatchers.anyString()))
+                .willReturn(Boolean.FALSE);
+
         var request = ProprietarioCreator.createProprietarioPostRequest();
         var response = proprietarioService.saveProprietario(request);
 
