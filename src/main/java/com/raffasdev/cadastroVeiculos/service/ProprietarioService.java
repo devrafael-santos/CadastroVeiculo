@@ -9,6 +9,8 @@ import com.raffasdev.cadastroVeiculos.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFAlreadyExistsException;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,5 +37,9 @@ public class ProprietarioService {
         Proprietario proprietario = Optional.ofNullable(proprietarioRepository.findByCpf(cpf)).orElseThrow(
                 () -> new CPFNotFoundException(cpf));
         return ProprietarioMapper.toGetResponse(proprietario);
+    }
+
+    public Page<ProprietarioGetResponse> getProprietarios(Pageable pageable) {
+        return proprietarioRepository.findAll(pageable).map(ProprietarioMapper::toGetResponse);
     }
 }

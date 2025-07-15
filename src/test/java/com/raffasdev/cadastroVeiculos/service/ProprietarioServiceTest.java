@@ -2,20 +2,23 @@ package com.raffasdev.cadastroVeiculos.service;
 
 import com.raffasdev.cadastroVeiculos.domain.Proprietario;
 import com.raffasdev.cadastroVeiculos.repository.ProprietarioRepository;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFAlreadyExistsException;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFNotFoundException;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -85,6 +88,40 @@ class ProprietarioServiceTest {
         });
 
         verify(proprietarioRepositoryMock, never()).save(ArgumentMatchers.any());
+    }
+
+    @Test
+    @DisplayName("getProprietarios returns a page of ProprietarioGetResponse when having data")
+    void getProprietarios_ReturnsPageOfProprietariosGetResponse_WhenHavingData() {
+        var proprietario = ProprietarioCreator.createValidProprietario();
+        var proprietario2 = ProprietarioCreator.createValidProprietario();
+        proprietario2.setCpf("111.111.111-11");
+        proprietario2.setNome("Jona Doe");
+
+        Page<Proprietario> proprietarioPage = new PageImpl<>(List.of(proprietario, proprietario2));
+
+        given(proprietarioRepositoryMock.findAll(ArgumentMatchers.any(Pageable.class)))
+                .willReturn(proprietarioPage);
+
+        Page<ProprietarioGetResponse> responsePage = proprietarioService.getProprietarios(Pageable.unpaged());
+        assertNotNull(responsePage);
+        assertFalse(responsePage.isEmpty());
+        assertEquals(2, responsePage.getTotalElements());
+    }
+
+    @Test
+    @DisplayName("getProprietarios returns an empty page of ProprietarioGetResponse when having data")
+    void getProprietarios_ReturnsEmptyPageOfProprietariosGetResponse_WhenNoDataIsPresent() {
+
+        Page<Proprietario> emptyProprietarioPage = new PageImpl<>(List.of());
+
+        given(proprietarioRepositoryMock.findAll(ArgumentMatchers.any(Pageable.class)))
+                .willReturn(emptyProprietarioPage);
+
+        Page<ProprietarioGetResponse> responsePage = proprietarioService.getProprietarios(Pageable.unpaged());
+        assertNotNull(responsePage);
+        assertTrue(responsePage.isEmpty());
+        assertEquals(0, responsePage.getTotalElements());
     }
 
 }
