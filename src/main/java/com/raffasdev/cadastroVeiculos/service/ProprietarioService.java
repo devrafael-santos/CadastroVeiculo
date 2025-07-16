@@ -3,12 +3,20 @@ package com.raffasdev.cadastroVeiculos.service;
 import com.raffasdev.cadastroVeiculos.domain.Proprietario;
 import com.raffasdev.cadastroVeiculos.repository.ProprietarioRepository;
 import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPostResponse;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPutResponse;
 import com.raffasdev.cadastroVeiculos.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFAlreadyExistsException;
+import com.raffasdev.cadastroVeiculos.shared.exception.CPFNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +32,36 @@ public class ProprietarioService {
 
         Proprietario proprietario = new Proprietario(requestProprietario.getCpf(), requestProprietario.getNome());
         proprietarioRepository.save(proprietario);
-        return ProprietarioMapper.toResponse(proprietario);
+        return ProprietarioMapper.toPostResponse(proprietario);
+    }
+
+    public ProprietarioGetResponse getProprietarioByCpf(String cpf) {
+        Proprietario proprietario = Optional.ofNullable(proprietarioRepository.findByCpf(cpf)).orElseThrow(
+                () -> new CPFNotFoundException(cpf));
+        return ProprietarioMapper.toGetResponse(proprietario);
+    }
+
+    public Page<ProprietarioGetResponse> getProprietarios(Pageable pageable) {
+        return proprietarioRepository.findAll(pageable).map(ProprietarioMapper::toGetResponse);
+    }
+
+    @Transactional
+    public ProprietarioPutResponse updateProprietario(ProprietarioPutRequest requestProprietario, String cpf) {
+        Proprietario proprietario = Optional.ofNullable(proprietarioRepository.findByCpf(cpf)).orElseThrow(
+                () -> new CPFNotFoundException(cpf));
+        proprietario.setNome(requestProprietario.getNome());
+
+        var proprietarioUpdated = proprietarioRepository.save(proprietario);
+
+        return ProprietarioMapper.toPutResponse(proprietarioUpdated);
+    }
+
+    @Transactional
+    public void deleteProprietarioByCpf(String cpf) {
+        if (!proprietarioRepository.existsByCpf(cpf)) {
+            throw new CPFNotFoundException(cpf);
+        }
+
+        proprietarioRepository.deleteByCpf(cpf);
     }
 }
