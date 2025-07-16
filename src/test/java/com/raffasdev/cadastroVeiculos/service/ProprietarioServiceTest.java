@@ -124,4 +124,42 @@ class ProprietarioServiceTest {
         assertEquals(0, responsePage.getTotalElements());
     }
 
+    @Test
+    @DisplayName("updateProprietario throws CPFAlreadyExistsException when a existing CPF is provided")
+    void updateProprietario_ThrowsCPFNotFoundException_WhenValidDataIsProvided() {
+        given(proprietarioRepositoryMock.findByCpf(ArgumentMatchers.anyString()))
+                .willReturn(ProprietarioCreator.createValidProprietario());
+
+        var cpf = "123.456.789-01";
+
+        given(proprietarioRepositoryMock.save(ArgumentMatchers.any(Proprietario.class)))
+                .willReturn(new Proprietario(
+                        cpf,
+                        "Jone Doe"
+                ));
+
+
+        var request = ProprietarioCreator.createProprietarioPutRequest();
+        var response = proprietarioService.updateProprietario(request, cpf);
+
+        assertNotNull(response);
+        assertEquals(request.getNome(), response.nome());
+    }
+
+    @Test
+    @DisplayName("updateProprietario throws CPFNotFoundException when CPF not exists")
+    void updateProprietario_ThrowsCPFNotFoundException_WhenCPFnotExists() {
+        var proprietario = ProprietarioCreator.createValidProprietario();
+
+        given(proprietarioRepositoryMock.findByCpf(ArgumentMatchers.anyString()))
+                .willReturn(null);
+
+        assertThrows(CPFNotFoundException.class, () -> {
+            proprietarioService.updateProprietario(ProprietarioCreator.createProprietarioPutRequest(),
+                    proprietario.getCpf());
+        });
+
+        verify(proprietarioRepositoryMock, never()).save(ArgumentMatchers.any());
+    }
+
 }

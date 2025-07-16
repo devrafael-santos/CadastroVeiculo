@@ -2,8 +2,10 @@ package com.raffasdev.cadastroVeiculos.util;
 
 import com.raffasdev.cadastroVeiculos.domain.Proprietario;
 import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPostResponse;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPutResponse;
 
 public class ProprietarioCreator {
 
@@ -34,6 +36,18 @@ public class ProprietarioCreator {
         return new ProprietarioGetResponse(
                 CPF,
                 NOME
+        );
+    }
+
+    public static ProprietarioPutRequest createProprietarioPutRequest() {
+        return new ProprietarioPutRequest(
+                "Jone Doe"
+        );
+    }
+
+    public static ProprietarioPutResponse createProprietarioPutResponse() {
+        return new ProprietarioPutResponse(
+                "Jone Doe"
         );
     }
 }

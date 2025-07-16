@@ -1,6 +1,7 @@
 package com.raffasdev.cadastroVeiculos.controller;
 
 import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.service.ProprietarioService;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
@@ -75,6 +76,24 @@ class ProprietarioControllerTest {
 
         assertNotNull(responseEntity.getBody());
         assertEquals(2, responseEntity.getBody().getContent().size());
+        assertEquals(200, responseEntity.getStatusCode().value());
+    }
+
+    @Test
+    @DisplayName("updateProprietario returns ProprietarioPutResponse when valid data is provided")
+    void updateProprietario_returnsProprietarioPutResponse_WhenValidDataIsProvided() {
+        given(proprietarioService.updateProprietario(ArgumentMatchers.any(ProprietarioPutRequest.class),
+                ArgumentMatchers.anyString()))
+                .willReturn(ProprietarioCreator.createProprietarioPutResponse());
+
+        var cpf = "123.456.789-01";
+
+        var requestEntity = ProprietarioCreator.createProprietarioPutRequest();
+
+        var responseEntity = proprietarioController.updateProprietario(requestEntity, cpf);
+
+        assertNotNull(responseEntity.getBody());
+        assertEquals(requestEntity.getNome(), responseEntity.getBody().nome());
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 }

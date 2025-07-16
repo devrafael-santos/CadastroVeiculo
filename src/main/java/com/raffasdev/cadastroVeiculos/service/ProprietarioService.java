@@ -3,8 +3,10 @@ package com.raffasdev.cadastroVeiculos.service;
 import com.raffasdev.cadastroVeiculos.domain.Proprietario;
 import com.raffasdev.cadastroVeiculos.repository.ProprietarioRepository;
 import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPostResponse;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPutResponse;
 import com.raffasdev.cadastroVeiculos.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFAlreadyExistsException;
 import com.raffasdev.cadastroVeiculos.shared.exception.CPFNotFoundException;
@@ -41,5 +43,16 @@ public class ProprietarioService {
 
     public Page<ProprietarioGetResponse> getProprietarios(Pageable pageable) {
         return proprietarioRepository.findAll(pageable).map(ProprietarioMapper::toGetResponse);
+    }
+
+    @Transactional
+    public ProprietarioPutResponse updateProprietario(ProprietarioPutRequest requestProprietario, String cpf) {
+        Proprietario proprietario = Optional.ofNullable(proprietarioRepository.findByCpf(cpf)).orElseThrow(
+                () -> new CPFNotFoundException(cpf));
+        proprietario.setNome(requestProprietario.getNome());
+
+        var proprietarioUpdated = proprietarioRepository.save(proprietario);
+
+        return ProprietarioMapper.toPutResponse(proprietarioUpdated);
     }
 }

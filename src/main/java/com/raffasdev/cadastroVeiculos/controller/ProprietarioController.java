@@ -1,8 +1,10 @@
 package com.raffasdev.cadastroVeiculos.controller;
 
 import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
 import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPostResponse;
+import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPutResponse;
 import com.raffasdev.cadastroVeiculos.service.ProprietarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +22,8 @@ public class ProprietarioController {
     private final ProprietarioService proprietarioService;
 
     @PostMapping()
-    public ResponseEntity<ProprietarioPostResponse> saveProprietario(@RequestBody @Validated ProprietarioPostRequest proprietarioPostRequest) {
+    public ResponseEntity<ProprietarioPostResponse> saveProprietario(@RequestBody @Validated
+                                                                     ProprietarioPostRequest proprietarioPostRequest) {
         return new ResponseEntity<>(proprietarioService.saveProprietario(proprietarioPostRequest), HttpStatus.CREATED);
     }
 
@@ -32,6 +35,13 @@ public class ProprietarioController {
     @GetMapping()
     public ResponseEntity<Page<ProprietarioGetResponse>> getProprietarios(Pageable pageable) {
         return new ResponseEntity<>(proprietarioService.getProprietarios(pageable), HttpStatus.OK);
+    }
+
+    @PutMapping("/{cpf}")
+    public ResponseEntity<ProprietarioPutResponse> updateProprietario(@RequestBody @Validated
+                                                                      ProprietarioPutRequest proprietarioPostRequest,
+                                                                      @PathVariable String cpf) {
+        return new ResponseEntity<>(proprietarioService.updateProprietario(proprietarioPostRequest, cpf), HttpStatus.OK);
     }
 
 }
