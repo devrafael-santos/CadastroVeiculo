@@ -55,4 +55,13 @@ public class ProprietarioService {
 
         return ProprietarioMapper.toPutResponse(proprietarioUpdated);
     }
+
+    @Transactional
+    public void deleteProprietarioByCpf(String cpf) {
+        if (!proprietarioRepository.existsByCpf(cpf)) {
+            throw new CPFNotFoundException(cpf);
+        }
+
+        proprietarioRepository.deleteByCpf(cpf);
+    }
 }

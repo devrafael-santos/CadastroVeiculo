@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface ProprietarioRepository extends JpaRepository<Proprietario, String> {
     boolean existsByCpf(String cpf);
     Proprietario findByCpf(String cpf);
+    void deleteByCpf(String cpf);
 }
