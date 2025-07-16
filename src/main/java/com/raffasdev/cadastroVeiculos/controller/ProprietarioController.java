@@ -44,4 +44,10 @@ public class ProprietarioController {
         return new ResponseEntity<>(proprietarioService.updateProprietario(proprietarioPostRequest, cpf), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Void> deleteProprietarioByCpf(@PathVariable String cpf) {
+        proprietarioService.deleteProprietarioByCpf(cpf);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

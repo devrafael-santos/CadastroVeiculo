@@ -159,7 +159,30 @@ class ProprietarioServiceTest {
                     proprietario.getCpf());
         });
 
-        verify(proprietarioRepositoryMock, never()).save(ArgumentMatchers.any());
+        verify(proprietarioRepositoryMock, never()).save(ArgumentMatchers.any(Proprietario.class));
+    }
+
+    @Test
+    @DisplayName("deleteProprietarioByCpf deletes Proprietario when CPF exists")
+    void deleteProprietarioByCpf_deletesProprietario_WhenCPFExists() {
+        assertDoesNotThrow(() -> {
+            given(proprietarioRepositoryMock.existsByCpf(ArgumentMatchers.anyString()))
+                    .willReturn(Boolean.TRUE);
+            proprietarioService.deleteProprietarioByCpf("123.456.789-01");
+        });
+    }
+
+    @Test
+    @DisplayName("deleteProprietarioByCpf throws CPFNotFoundException when CPF not exists")
+    void deleteProprietarioByCpf_throwsCPFNotFoundException_WhenCPFNotExists() {
+
+        given(proprietarioRepositoryMock.existsByCpf(ArgumentMatchers.anyString()))
+                .willReturn(Boolean.FALSE);
+
+        assertThrows(CPFNotFoundException.class, () -> {
+            proprietarioService.deleteProprietarioByCpf("123.456.789-01");
+        });
+        verify(proprietarioRepositoryMock, never()).save(ArgumentMatchers.any(Proprietario.class));
     }
 
 }
