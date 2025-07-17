@@ -134,7 +134,7 @@ A API consiste de um CRUD completo de Proprietario com os seguintes endpoints:
 
 ### Veiculo
 
-O veiculo contem apenas um endpoint para criação e consulta:
+O veiculo contem apenas dois endpoints; um para criação e um para consulta:
 
 ### `POST /veiculo`
 
