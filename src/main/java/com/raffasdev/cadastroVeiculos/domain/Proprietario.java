@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Proprietario {
 
     @Id
-    @Column(name = "proprietario_cpf", length = 14)
+    @Column(name = "proprietario_cpf", length = 14, nullable = false)
     private String cpf;
 
     @Column(name = "nome", nullable = false)
