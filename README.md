@@ -110,7 +110,7 @@ A API consiste de um CRUD completo de Proprietario com os seguintes endpoints:
 
 ```json
 {
-  
+  "nome": "John Doe"
 }
 ```
 
