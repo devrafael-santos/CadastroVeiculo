@@ -18,11 +18,11 @@ erDiagram
     }
     
     Veiculo {
-        varchar(7) veiculo_placa PK "NOT NULL"
-        varchar(14) proprietario_cpf FK "NOT NULL UNIQUE"
+        varchar(7) veiculo_placa PK "NOT NULL UNIQUE"
+        varchar proprietario_cpf FK "NOT NULL UNIQUE"
         varchar marca "NOT NULL"
         varchar modelo "NOT NULL"
-        varchar(17) chassi "NOT NULL"
+        varchar chassi "NOT NULL"
         boolean licenciado "NOT NULL"
     }
 ```

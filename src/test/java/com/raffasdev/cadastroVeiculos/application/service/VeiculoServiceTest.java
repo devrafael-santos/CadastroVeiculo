@@ -3,6 +3,7 @@ package com.raffasdev.cadastroVeiculos.application.service;
 import com.raffasdev.cadastroVeiculos.application.gateways.VeiculoDataGateway;
 import com.raffasdev.cadastroVeiculos.domain.exception.CPFNotFoundException;
 import com.raffasdev.cadastroVeiculos.domain.exception.PlacaAlreadyExistsException;
+import com.raffasdev.cadastroVeiculos.domain.exception.PlacaNotFoundException;
 import com.raffasdev.cadastroVeiculos.domain.repository.ProprietarioRepository;
 import com.raffasdev.cadastroVeiculos.domain.repository.VeiculoRepository;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
@@ -78,6 +79,31 @@ class VeiculoServiceTest {
 
         assertThrows(CPFNotFoundException.class, () -> {
             veiculoService.saveVeiculo("ABC1234", "111-111-111-11");
+        });
+    }
+
+    @Test
+    @DisplayName("getVeiculoByPlaca returns Veiculo when placa exists")
+    void getVeiculoByPlaca_ReturnsVeiculo_WhenPlacaExists() {
+
+        given(veiculoRepositoryMock.findByPlaca("ABC1234"))
+                .willReturn(Optional.of(VeiculoCreator.createValidVeiculo()));
+
+        var response = veiculoService.getVeiculoByPlaca("ABC1234");
+
+        assertNotNull(response);
+        assertEquals(VeiculoCreator.createValidVeiculo(), response);
+    }
+
+    @Test
+    @DisplayName("getVeiculoByPlaca throws PlacaNotFoundException when placa does not exist")
+    void getVeiculoByPlaca_ThrowsPlacaNotFoundException_WhenPlacaDoesNotExist() {
+
+        given(veiculoRepositoryMock.findByPlaca("ABC1234"))
+                .willReturn(Optional.empty());
+
+        assertThrows(PlacaNotFoundException.class, () -> {
+            veiculoService.getVeiculoByPlaca("ABC1234");
         });
     }
 
