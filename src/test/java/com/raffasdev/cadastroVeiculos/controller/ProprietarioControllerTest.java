@@ -1,9 +1,9 @@
 package com.raffasdev.cadastroVeiculos.controller;
 
-import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
-import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
-import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
-import com.raffasdev.cadastroVeiculos.service.ProprietarioService;
+import com.raffasdev.cadastroVeiculos.application.service.ProprietarioService;
+import com.raffasdev.cadastroVeiculos.domain.model.Proprietario;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.controller.ProprietarioController;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,21 +11,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class ProprietarioControllerTest {
 
     @Mock
     private ProprietarioService proprietarioServiceMock;
+
+    @Mock
+    private ProprietarioMapper proprietarioMapperMock;
 
     @InjectMocks
     private ProprietarioController proprietarioController;
@@ -33,7 +36,10 @@ class ProprietarioControllerTest {
     @Test
     @DisplayName("saveProprietario returns ProprietarioPostResponse when valid data is provided")
     void saveProprietario_returnsProprietarioPostResponse_WhenValidDataIsProvided() {
-        given(proprietarioServiceMock.saveProprietario(ArgumentMatchers.any(ProprietarioPostRequest.class)))
+        given(proprietarioServiceMock.saveProprietario(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .willReturn(ProprietarioCreator.createValidProprietario());
+
+        given(proprietarioMapperMock.toPostResponse(ArgumentMatchers.any(Proprietario.class)))
                 .willReturn(ProprietarioCreator.createProprietarioPostResponse());
 
         var requestEntity = ProprietarioCreator.createProprietarioPostRequest();
@@ -49,6 +55,9 @@ class ProprietarioControllerTest {
     @DisplayName("getProprietarioByCpf returns ProprietarioGetResponse when CPF exists")
     void getProprietarioByCpf_returnsProprietarioGetResponse_WhenCPFExists() {
         given(proprietarioServiceMock.getProprietarioByCpf(ArgumentMatchers.anyString()))
+                .willReturn(ProprietarioCreator.createValidProprietario());
+
+        given(proprietarioMapperMock.toGetResponse(ArgumentMatchers.any(Proprietario.class)))
                 .willReturn(ProprietarioCreator.createProprietarioGetResponse());
 
         String cpf = ProprietarioCreator.createValidProprietario().getCpf();
@@ -62,10 +71,14 @@ class ProprietarioControllerTest {
     @Test
     @DisplayName("getProprietarios returns page of ProprietarioGetResponse when having data")
     void getProprietarios_returnsPageOfProprietarioGetResponse_WhenHavingData() {
-        var proprietario = ProprietarioCreator.createProprietarioGetResponse();
-        var proprietario2 = ProprietarioCreator.createProprietarioGetResponse();
+        var proprietario = ProprietarioCreator.createValidProprietario();
+        var proprietario2 = ProprietarioCreator.createValidProprietario();
 
-        Page<ProprietarioGetResponse> proprietarioPage = new PageImpl<>(List.of(proprietario, proprietario2));
+        given(proprietarioMapperMock.toGetResponse(ArgumentMatchers.any(Proprietario.class))).willReturn(
+                ProprietarioCreator.createProprietarioGetResponse()
+        );
+
+        Page<Proprietario> proprietarioPage = new PageImpl<>(List.of(proprietario, proprietario2));
 
         given(proprietarioServiceMock.getProprietarios(ArgumentMatchers.any(Pageable.class)))
                 .willReturn(proprietarioPage);
@@ -81,8 +94,11 @@ class ProprietarioControllerTest {
     @Test
     @DisplayName("updateProprietario returns ProprietarioPutResponse when valid data is provided")
     void updateProprietario_returnsProprietarioPutResponse_WhenValidDataIsProvided() {
-        given(proprietarioServiceMock.updateProprietario(ArgumentMatchers.any(ProprietarioPutRequest.class),
+        given(proprietarioServiceMock.updateProprietario(ArgumentMatchers.anyString(),
                 ArgumentMatchers.anyString()))
+                .willReturn(ProprietarioCreator.createValidProprietario());
+
+        given(proprietarioMapperMock.toPutResponse(ArgumentMatchers.any(Proprietario.class)))
                 .willReturn(ProprietarioCreator.createProprietarioPutResponse());
 
         var cpf = "123.456.789-01";

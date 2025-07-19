@@ -1,10 +1,11 @@
 package com.raffasdev.cadastroVeiculos.service;
 
-import com.raffasdev.cadastroVeiculos.domain.Proprietario;
-import com.raffasdev.cadastroVeiculos.repository.ProprietarioRepository;
-import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
-import com.raffasdev.cadastroVeiculos.shared.exception.CPFAlreadyExistsException;
-import com.raffasdev.cadastroVeiculos.shared.exception.CPFNotFoundException;
+import com.raffasdev.cadastroVeiculos.application.service.ProprietarioService;
+import com.raffasdev.cadastroVeiculos.domain.exception.CPFAlreadyExistsException;
+import com.raffasdev.cadastroVeiculos.domain.exception.CPFNotFoundException;
+import com.raffasdev.cadastroVeiculos.domain.model.Proprietario;
+import com.raffasdev.cadastroVeiculos.domain.repository.ProprietarioRepository;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,21 +14,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class ProprietarioServiceTest {
 
     @Mock
     private ProprietarioRepository proprietarioRepositoryMock;
+
+    @Mock
+    private ProprietarioMapper proprietarioMapperMock;
 
     @InjectMocks
     private ProprietarioService proprietarioService;
@@ -38,13 +43,17 @@ class ProprietarioServiceTest {
         given(proprietarioRepositoryMock.existsByCpf(ArgumentMatchers.anyString()))
                 .willReturn(Boolean.FALSE);
 
-        var request = ProprietarioCreator.createProprietarioPostRequest();
-        var response = proprietarioService.saveProprietario(request);
+        given(proprietarioRepositoryMock.save(ArgumentMatchers.any(Proprietario.class)))
+                .willReturn(ProprietarioCreator.createValidProprietario());
 
-        Assertions.assertThatCode(() -> proprietarioService.saveProprietario(request))
+        var request = ProprietarioCreator.createProprietarioPostRequest();
+        var response = proprietarioService.saveProprietario(request.getCpf(), request.getNome());
+
+        Assertions.assertThatCode(() -> proprietarioService.saveProprietario(request.getCpf(), request.getNome()))
                 .doesNotThrowAnyException();
+
         assertNotNull(response);
-        assertEquals(request.getNome(), response.nome());
+        assertEquals(request.getNome(), response.getNome());
     }
 
     @Test
@@ -54,9 +63,11 @@ class ProprietarioServiceTest {
         given(proprietarioRepositoryMock.existsByCpf(ArgumentMatchers.anyString()))
                 .willReturn(Boolean.TRUE);
 
+        var proprietario = ProprietarioCreator.createValidProprietario();
+
         assertThrows(CPFAlreadyExistsException.class, () -> {
             proprietarioService.saveProprietario(
-                    ProprietarioCreator.createProprietarioPostRequest());
+                    proprietario.getCpf(), proprietario.getNome());
         });
     }
 
@@ -66,13 +77,13 @@ class ProprietarioServiceTest {
         var proprietario = ProprietarioCreator.createValidProprietario();
 
         given(proprietarioRepositoryMock.findByCpf(ArgumentMatchers.anyString()))
-                .willReturn(proprietario);
+                .willReturn(Optional.of(proprietario));
 
         var response = proprietarioService.getProprietarioByCpf(proprietario.getCpf());
 
         assertNotNull(response);
-        assertEquals(proprietario.getNome(), response.nome());
-        assertEquals(proprietario.getCpf(), response.cpf());
+        assertEquals(proprietario.getNome(), response.getNome());
+        assertEquals(proprietario.getCpf(), response.getCpf());
     }
 
     @Test
@@ -81,7 +92,7 @@ class ProprietarioServiceTest {
         var proprietario = ProprietarioCreator.createValidProprietario();
 
         given(proprietarioRepositoryMock.findByCpf(ArgumentMatchers.anyString()))
-                .willReturn(null);
+                .willReturn(Optional.empty());
 
         assertThrows(CPFNotFoundException.class, () -> {
             proprietarioService.getProprietarioByCpf(proprietario.getCpf());
@@ -103,7 +114,7 @@ class ProprietarioServiceTest {
         given(proprietarioRepositoryMock.findAll(ArgumentMatchers.any(Pageable.class)))
                 .willReturn(proprietarioPage);
 
-        Page<ProprietarioGetResponse> responsePage = proprietarioService.getProprietarios(Pageable.unpaged());
+        Page<Proprietario> responsePage = proprietarioService.getProprietarios(Pageable.unpaged());
         assertNotNull(responsePage);
         assertFalse(responsePage.isEmpty());
         assertEquals(2, responsePage.getTotalElements());
@@ -118,7 +129,7 @@ class ProprietarioServiceTest {
         given(proprietarioRepositoryMock.findAll(ArgumentMatchers.any(Pageable.class)))
                 .willReturn(emptyProprietarioPage);
 
-        Page<ProprietarioGetResponse> responsePage = proprietarioService.getProprietarios(Pageable.unpaged());
+        Page<Proprietario> responsePage = proprietarioService.getProprietarios(Pageable.unpaged());
         assertNotNull(responsePage);
         assertTrue(responsePage.isEmpty());
         assertEquals(0, responsePage.getTotalElements());
@@ -128,7 +139,7 @@ class ProprietarioServiceTest {
     @DisplayName("updateProprietario throws CPFAlreadyExistsException when a existing CPF is provided")
     void updateProprietario_ThrowsCPFNotFoundException_WhenValidDataIsProvided() {
         given(proprietarioRepositoryMock.findByCpf(ArgumentMatchers.anyString()))
-                .willReturn(ProprietarioCreator.createValidProprietario());
+                .willReturn(Optional.of(ProprietarioCreator.createValidProprietario()));
 
         var cpf = "123.456.789-01";
 
@@ -140,10 +151,10 @@ class ProprietarioServiceTest {
 
 
         var request = ProprietarioCreator.createProprietarioPutRequest();
-        var response = proprietarioService.updateProprietario(request, cpf);
+        var response = proprietarioService.updateProprietario(request.getNome(), cpf);
 
         assertNotNull(response);
-        assertEquals(request.getNome(), response.nome());
+        assertEquals(request.getNome(), response.getNome());
     }
 
     @Test
@@ -152,10 +163,10 @@ class ProprietarioServiceTest {
         var proprietario = ProprietarioCreator.createValidProprietario();
 
         given(proprietarioRepositoryMock.findByCpf(ArgumentMatchers.anyString()))
-                .willReturn(null);
+                .willReturn(Optional.empty());
 
         assertThrows(CPFNotFoundException.class, () -> {
-            proprietarioService.updateProprietario(ProprietarioCreator.createProprietarioPutRequest(),
+            proprietarioService.updateProprietario(proprietario.getNome(),
                     proprietario.getCpf());
         });
 
