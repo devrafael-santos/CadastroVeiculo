@@ -1,11 +1,11 @@
 package com.raffasdev.cadastroVeiculos.util;
 
-import com.raffasdev.cadastroVeiculos.domain.Proprietario;
-import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPostRequest;
-import com.raffasdev.cadastroVeiculos.rest.dto.request.ProprietarioPutRequest;
-import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioGetResponse;
-import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPostResponse;
-import com.raffasdev.cadastroVeiculos.rest.dto.response.ProprietarioPutResponse;
+import com.raffasdev.cadastroVeiculos.domain.model.Proprietario;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.request.ProprietarioPostRequest;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.request.ProprietarioPutRequest;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.ProprietarioGetResponse;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.ProprietarioPostResponse;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.ProprietarioPutResponse;
 
 public class ProprietarioCreator {
 
