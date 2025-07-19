@@ -1,8 +1,7 @@
-package com.raffasdev.cadastroVeiculos.controller;
+package com.raffasdev.cadastroVeiculos.infrastructure.web.rest.controller;
 
 import com.raffasdev.cadastroVeiculos.application.service.ProprietarioService;
 import com.raffasdev.cadastroVeiculos.domain.model.Proprietario;
-import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.controller.ProprietarioController;
 import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
 import org.junit.jupiter.api.DisplayName;

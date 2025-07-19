@@ -1,11 +1,9 @@
-package com.raffasdev.cadastroVeiculos.service;
+package com.raffasdev.cadastroVeiculos.application.service;
 
-import com.raffasdev.cadastroVeiculos.application.service.ProprietarioService;
 import com.raffasdev.cadastroVeiculos.domain.exception.CPFAlreadyExistsException;
 import com.raffasdev.cadastroVeiculos.domain.exception.CPFNotFoundException;
 import com.raffasdev.cadastroVeiculos.domain.model.Proprietario;
 import com.raffasdev.cadastroVeiculos.domain.repository.ProprietarioRepository;
-import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.mapper.ProprietarioMapper;
 import com.raffasdev.cadastroVeiculos.util.ProprietarioCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -23,16 +21,15 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProprietarioServiceTest {
 
     @Mock
     private ProprietarioRepository proprietarioRepositoryMock;
-
-    @Mock
-    private ProprietarioMapper proprietarioMapperMock;
 
     @InjectMocks
     private ProprietarioService proprietarioService;
