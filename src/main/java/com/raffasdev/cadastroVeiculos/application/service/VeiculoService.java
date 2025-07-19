@@ -3,6 +3,7 @@ package com.raffasdev.cadastroVeiculos.application.service;
 import com.raffasdev.cadastroVeiculos.application.gateways.VeiculoDataGateway;
 import com.raffasdev.cadastroVeiculos.domain.exception.CPFNotFoundException;
 import com.raffasdev.cadastroVeiculos.domain.exception.PlacaAlreadyExistsException;
+import com.raffasdev.cadastroVeiculos.domain.exception.PlacaNotFoundException;
 import com.raffasdev.cadastroVeiculos.domain.model.Veiculo;
 import com.raffasdev.cadastroVeiculos.domain.repository.ProprietarioRepository;
 import com.raffasdev.cadastroVeiculos.domain.repository.VeiculoRepository;
@@ -42,5 +43,10 @@ public class VeiculoService {
         );
 
         return veiculoRepository.save(novoVeiculo);
+    }
+
+    public Veiculo getVeiculoByPlaca(String placa) {
+        return veiculoRepository.findByPlaca(placa)
+                .orElseThrow(() -> new PlacaNotFoundException(placa));
     }
 }
