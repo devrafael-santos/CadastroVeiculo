@@ -3,6 +3,7 @@ package com.raffasdev.cadastroVeiculos.util;
 import com.raffasdev.cadastroVeiculos.domain.model.Veiculo;
 import com.raffasdev.cadastroVeiculos.infrastructure.gateways.http.dto.response.VeiculoDataGatewayResponse;
 import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.request.VeiculoPostRequest;
+import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.VeiculoGetResponse;
 import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.VeiculoPostResponse;
 
 public class VeiculoCreator {
@@ -34,6 +35,16 @@ public class VeiculoCreator {
 
     public static VeiculoPostResponse createValidPostResponseVeiculo() {
         return new VeiculoPostResponse(
+                "ABC1234",
+                ProprietarioCreator.createValidProprietario().getCpf(),
+                "Dodge",
+                "Omni",
+                "WBAPT73598C125222",
+                true);
+    }
+
+    public static VeiculoGetResponse createValidGetResponseVeiculo() {
+        return new VeiculoGetResponse(
                 "ABC1234",
                 ProprietarioCreator.createValidProprietario().getCpf(),
                 "Dodge",
