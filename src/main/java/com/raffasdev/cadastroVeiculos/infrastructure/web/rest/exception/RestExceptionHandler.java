@@ -1,9 +1,6 @@
 package com.raffasdev.cadastroVeiculos.infrastructure.web.rest.exception;
 
-import com.raffasdev.cadastroVeiculos.domain.exception.CPFAlreadyExistsException;
-import com.raffasdev.cadastroVeiculos.domain.exception.CPFNotFoundException;
-import com.raffasdev.cadastroVeiculos.domain.exception.PlacaAlreadyExistsException;
-import com.raffasdev.cadastroVeiculos.domain.exception.PlacaNotFoundException;
+import com.raffasdev.cadastroVeiculos.domain.exception.*;
 import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.problem.ProblemDetails;
 import com.raffasdev.cadastroVeiculos.infrastructure.web.rest.dto.response.problem.ValidationProblemDetails;
 import org.springframework.http.HttpHeaders;
@@ -105,6 +102,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return this.createResponseEntity(exceptionDetails, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<Object> handlePlacaNotFoundException(ServiceUnavailableException exception, WebRequest request) {
+        ProblemDetails exceptionDetails = ProblemDetails.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                .title("Service Unavailable Exception: Service is currently unavailable")
+                .details(exception.getMessage())
+                .build();
+
+        return this.createResponseEntity(exceptionDetails, new HttpHeaders(), HttpStatus.SERVICE_UNAVAILABLE, request);
     }
 
 }
